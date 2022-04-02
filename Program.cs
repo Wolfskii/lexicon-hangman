@@ -8,52 +8,80 @@ namespace Hangman
     {
         static void Main(string[] args)
         {
+            int maxTries = 10;
             string[] words = { "ice", "ball", "dimension" };
-            StringBuilder incorrectLetters = new StringBuilder(10);
-            string currentWord = GetRandomWordFromArray(words).ToUpper();
 
+            PlayGame(maxTries, words);
+        }
+
+        static void PlayGame(int maxTries, string[] words)
+        {
+            StringBuilder incorrectLetters = new StringBuilder(maxTries);
+            string currentWord = GetRandomWordFromArray(words).ToUpper();
             char[] correctLetters = new char[currentWord.Length];
             int amtCorrectLetters = 0;
-            int triesLeft = 10;
+            int triesLeft = maxTries;
 
-            Console.WriteLine(currentWord);
+            Console.WriteLine(currentWord); // TODO: Delete when done
             DisplayHiddenWord(currentWord);
 
+            Guess(currentWord, ref correctLetters, ref amtCorrectLetters, ref triesLeft, ref incorrectLetters);
+        }
+
+        static void Guess(string currentWord, ref char[] correctLetters, ref int amtCorrectLetters, ref int triesLeft, ref StringBuilder incorrectLetters)
+        {
             string guess = GetGuessFromUser();
 
             if (IsGuessInWord(guess, currentWord))
             {
                 if (guess.Length == 1)
                 {
-                    correctLetters[amtCorrectLetters++] = guess[0]; // Add the guessed letter as char after last char in array
-                    Console.WriteLine("Arr: " + new string(correctLetters));
-
-                    Console.WriteLine("You guessed a correct letter!");
+                    CorrectLetter(ref correctLetters, ref amtCorrectLetters, guess);
                 }
                 else if (guess.Length == currentWord.Length)
                 {
-                    Console.WriteLine("Congrats, you've won!");
+                    Win();
                 }
                 else
                 {
-                    triesLeft--;
-                    Console.WriteLine("Word was incorrect!");
+                    IncorrectWord(ref triesLeft);
                 }
             }
             else
             {
                 if (guess.Length == 1)
                 {
-                    triesLeft--;
-                    incorrectLetters.Append(guess[0] + " ");
-                    Console.WriteLine("Letter was incorrect!");
+                    IncorrectLetter(ref triesLeft, guess, ref incorrectLetters);
                 }
                 else if (guess.Length > 1)
                 {
-                    triesLeft--;
-                    Console.WriteLine("Word was incorrect!");
+                    IncorrectWord(ref triesLeft);
                 }
             }
+        }
+
+        static void Win()
+        {
+            Console.WriteLine("Congrats, you've won!");
+        }
+
+        static void IncorrectWord(ref int triesLeft)
+        {
+            triesLeft--;
+            Console.WriteLine("Word was incorrect!");
+        }
+
+        static void IncorrectLetter(ref int triesLeft, string guess, ref StringBuilder incorrectLetters)
+        {
+            triesLeft--;
+            incorrectLetters.Append(guess[0] + " ");
+            Console.WriteLine("Letter was incorrect!");
+        }
+
+        static void CorrectLetter(ref char[] correctLetters, ref int amtCorrectLetters, string guess)
+        {
+            correctLetters[amtCorrectLetters++] = guess[0]; // Add the guessed letter as char after last char in array
+            Console.WriteLine($"You guessed a correct letter ({guess})!");
         }
 
         static string GetGuessFromUser()
