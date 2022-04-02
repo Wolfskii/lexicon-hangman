@@ -44,12 +44,12 @@ namespace Hangman
 
                     if (GameIsWon(currentWord, correctLetters))
                     {
-                        Win(ref gameInProgress);
+                        Win(ref gameInProgress, triesLeft, incorrectLetters, currentWord, correctLetters);
                     }
                 }
                 else if (guess.Length == currentWord.Length)
                 {
-                    Win(ref gameInProgress);
+                    Win(ref gameInProgress, triesLeft, incorrectLetters, currentWord, correctLetters);
                 }
                 else
                 {
@@ -70,7 +70,7 @@ namespace Hangman
 
             if (triesLeft == 0)
             {
-                Lose(ref gameInProgress);
+                Lose(ref gameInProgress, triesLeft, incorrectLetters, currentWord, correctLetters);
             }
         }
 
@@ -83,17 +83,19 @@ namespace Hangman
             Console.WriteLine();
         }
 
-        static void Win(ref bool gameInProgress)
+        static void Win(ref bool gameInProgress, int triesLeft, StringBuilder incorrectLetters, string currentWord, char[] correctLetters)
         {
             gameInProgress = false;
             Console.Clear();
-            Console.WriteLine("Congrats, you've won!");
+            DisplayGuessInfo(triesLeft, incorrectLetters, currentWord, correctLetters);
+            Console.WriteLine("\nCongrats, you've won!");
         }
-        static void Lose(ref bool gameInProgress)
+        static void Lose(ref bool gameInProgress, int triesLeft, StringBuilder incorrectLetters, string currentWord, char[] correctLetters)
         {
             gameInProgress = false;
             Console.Clear();
-            Console.WriteLine("Shmucks, you've been hung and lost the game!");
+            DisplayGuessInfo(triesLeft, incorrectLetters, currentWord, correctLetters);
+            Console.WriteLine("\nShmucks! You've been hung and lost the game...");
         }
 
         static void IncorrectWord(ref int triesLeft)
