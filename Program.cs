@@ -21,14 +21,16 @@ namespace Hangman
             char[] correctLetters = new char[currentWord.Length];
             int amtCorrectLetters = 0;
             int triesLeft = maxTries;
+            bool gameInProgress = true;
 
-            Console.WriteLine(currentWord); // TODO: Delete when done
-            DisplayHiddenWord(currentWord);
-
-            Guess(currentWord, ref correctLetters, ref amtCorrectLetters, ref triesLeft, ref incorrectLetters);
+            while (gameInProgress)
+            {
+                DisplayHiddenWord(currentWord);
+                Guess(ref gameInProgress, currentWord, ref correctLetters, ref amtCorrectLetters, ref triesLeft, ref incorrectLetters);
+            }
         }
 
-        static void Guess(string currentWord, ref char[] correctLetters, ref int amtCorrectLetters, ref int triesLeft, ref StringBuilder incorrectLetters)
+        static void Guess(ref bool gameInProgress, string currentWord, ref char[] correctLetters, ref int amtCorrectLetters, ref int triesLeft, ref StringBuilder incorrectLetters)
         {
             string guess = GetGuessFromUser();
 
@@ -37,10 +39,15 @@ namespace Hangman
                 if (guess.Length == 1)
                 {
                     CorrectLetter(ref correctLetters, ref amtCorrectLetters, guess);
+
+                    if (amtCorrectLetters == currentWord.Length)
+                    {
+                        Win(ref gameInProgress);
+                    }
                 }
                 else if (guess.Length == currentWord.Length)
                 {
-                    Win();
+                    Win(ref gameInProgress);
                 }
                 else
                 {
@@ -58,11 +65,22 @@ namespace Hangman
                     IncorrectWord(ref triesLeft);
                 }
             }
+
+            if (triesLeft == 0)
+            {
+                Lose(ref gameInProgress);
+            }
         }
 
-        static void Win()
+        static void Win(ref bool gameInProgress)
         {
+            gameInProgress = false;
             Console.WriteLine("Congrats, you've won!");
+        }
+        static void Lose(ref bool gameInProgress)
+        {
+            gameInProgress = false;
+            Console.WriteLine("Shmucks, you've been hung and lost the game!");
         }
 
         static void IncorrectWord(ref int triesLeft)
