@@ -8,6 +8,7 @@ namespace Hangman
     {
         static void Main(string[] args)
         {
+            // Game-settings
             int maxTries = 10;
             string[] words = { "ice", "ball", "dimension" };
 
@@ -25,7 +26,12 @@ namespace Hangman
 
             while (gameInProgress)
             {
-                DisplayHiddenWord(currentWord);
+                Console.Clear();
+                DisplayTriesLeft(triesLeft);
+                DisplayIncorrectGuesses(incorrectLetters);
+                Console.WriteLine();
+                DisplayHiddenWord(currentWord, correctLetters);
+                Console.WriteLine();
                 Guess(ref gameInProgress, currentWord, ref correctLetters, ref amtCorrectLetters, ref triesLeft, ref incorrectLetters);
             }
         }
@@ -40,7 +46,7 @@ namespace Hangman
                 {
                     CorrectLetter(ref correctLetters, ref amtCorrectLetters, guess);
 
-                    if (amtCorrectLetters == currentWord.Length)
+                    if (GameIsWon(currentWord, correctLetters))
                     {
                         Win(ref gameInProgress);
                     }
@@ -75,11 +81,13 @@ namespace Hangman
         static void Win(ref bool gameInProgress)
         {
             gameInProgress = false;
+            Console.Clear();
             Console.WriteLine("Congrats, you've won!");
         }
         static void Lose(ref bool gameInProgress)
         {
             gameInProgress = false;
+            Console.Clear();
             Console.WriteLine("Shmucks, you've been hung and lost the game!");
         }
 
@@ -109,7 +117,7 @@ namespace Hangman
 
             while (!validGuess)
             {
-                Console.WriteLine("Please enter a guess:");
+                Console.Write("Please enter a guess: ");
                 guess = Console.ReadLine();
 
                 if (StringContainsOnlyLetters(guess))
@@ -125,17 +133,38 @@ namespace Hangman
             return guess.ToUpper();
         }
 
-        static void DisplayHiddenWord(string currentWord)
+        static void DisplayHiddenWord(string currentWord, char[] correctLetters)
         {
-            // TODO: Check with correctLetters first to show them in this output
+            Console.WriteLine(GetHiddenWord(currentWord, correctLetters));
+        }
+
+        static string GetHiddenWord(string currentWord, char[] correctLetters)
+        {
             string hiddenWord = "";
 
             for (int i = 0; i < currentWord.Length; i++)
             {
-                hiddenWord += "_ ";
+                if (Array.IndexOf(correctLetters, currentWord[i]) > -1)
+                {
+                    hiddenWord += $"{currentWord[i]} "; // Adds the current letter if it exists in correct guessed letters
+                }
+                else
+                {
+                    hiddenWord += "_ ";
+                }
             }
 
-            Console.WriteLine(hiddenWord);
+            return hiddenWord;
+        }
+
+        static void DisplayIncorrectGuesses(StringBuilder incorrectLetters)
+        {
+            Console.WriteLine($"Incorrect guesses: {incorrectLetters.ToString()}");
+        }
+
+        static void DisplayTriesLeft(int triesLeft)
+        {
+            Console.WriteLine($"Tries left: {triesLeft}");
         }
 
         static bool IsGuessInWord(string guess, string currentWord)
@@ -146,6 +175,13 @@ namespace Hangman
         static bool IsGuessInWord(char guess, string currentWord)
         {
             return currentWord.Contains(guess);
+        }
+
+        static bool GameIsWon(string currentWord, char[] correctLetters)
+        {
+            string hiddenWord = GetHiddenWord(currentWord, correctLetters);
+
+            return !hiddenWord.Contains("_");
         }
 
         static bool StringContainsOnlyLetters(string stringToValidate)
