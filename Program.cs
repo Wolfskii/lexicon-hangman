@@ -76,6 +76,8 @@ namespace Hangman
 
         static void DisplayGuessInfo(int triesLeft, StringBuilder incorrectLetters, string currentWord, char[] correctLetters)
         {
+            displayHangMan(triesLeft);
+            Console.WriteLine();
             DisplayTriesLeft(triesLeft);
             DisplayIncorrectGuesses(incorrectLetters);
             Console.WriteLine();
@@ -140,6 +142,56 @@ namespace Hangman
             }
 
             return guess.ToUpper();
+        }
+
+        static void displayHangMan(int triesLeft)
+        {
+            switch (triesLeft)
+            {
+                case 10:
+                    Console.WriteLine("\n\n\n\n\n\n");
+                    break;
+
+                case 9:
+                    Console.WriteLine("\n\n\n\n\n\n_____________");
+                    break;
+
+                case 8:
+                    Console.WriteLine("\n  |\n  |\n  |\n  |\n  |\n__|__________");
+                    break;
+
+                case 7:
+                    Console.WriteLine("   _______\n  | /\n  |/\n  |\n  |\n  |\n__|__________");
+                    break;
+
+                case 6:
+                    Console.WriteLine("   _______\n  | /     |\n  |/\n  |\n  |\n  |\n__|__________");
+                    break;
+
+                case 5:
+                    Console.WriteLine("   _______\n  | /     |\n  |/     (_)\n  |\n  |\n  |\n__|__________");
+                    break;
+
+                case 4:
+                    Console.WriteLine("   _______\n  | /     |\n  |/     (_)\n  |       |\n  |       |\n  |\n__|__________");
+                    break;
+
+                case 3:
+                    Console.WriteLine("   _______\n  | /     |\n  |/     (_)\n  |      \\|\n  |       |\n  |      \n__|__________");
+                    break;
+
+                case 2:
+                    Console.WriteLine("   _______\n  | /     |\n  |/     (_)\n  |      \\|/\n  |       |\n  |      \n__|__________");
+                    break;
+
+                case 1:
+                    Console.WriteLine("   _______\n  | /     |\n  |/     (_)\n  |      \\|/\n  |       |\n  |      / \n__|__________");
+                    break;
+
+                case 0:
+                    Console.WriteLine("   _______\n  | /     |\n  |/     (_)\n  |      \\|/\n  |       |\n  |      / \\\n__|__________");
+                    break;
+            }
         }
 
         static void DisplayHiddenWord(string currentWord, char[] correctLetters)
