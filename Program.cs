@@ -27,18 +27,14 @@ namespace Hangman
             while (gameInProgress)
             {
                 Console.Clear();
-                DisplayTriesLeft(triesLeft);
-                DisplayIncorrectGuesses(incorrectLetters);
-                Console.WriteLine();
-                DisplayHiddenWord(currentWord, correctLetters);
-                Console.WriteLine();
+                DisplayGuessInfo(triesLeft, incorrectLetters, currentWord, correctLetters);
                 Guess(ref gameInProgress, currentWord, ref correctLetters, ref amtCorrectLetters, ref triesLeft, ref incorrectLetters);
             }
         }
 
         static void Guess(ref bool gameInProgress, string currentWord, ref char[] correctLetters, ref int amtCorrectLetters, ref int triesLeft, ref StringBuilder incorrectLetters)
         {
-            string guess = GetGuessFromUser();
+            string guess = GetGuessFromUser(triesLeft, incorrectLetters, currentWord, correctLetters);
 
             if (IsGuessInWord(guess, currentWord))
             {
@@ -78,6 +74,15 @@ namespace Hangman
             }
         }
 
+        static void DisplayGuessInfo(int triesLeft, StringBuilder incorrectLetters, string currentWord, char[] correctLetters)
+        {
+            DisplayTriesLeft(triesLeft);
+            DisplayIncorrectGuesses(incorrectLetters);
+            Console.WriteLine();
+            DisplayHiddenWord(currentWord, correctLetters);
+            Console.WriteLine();
+        }
+
         static void Win(ref bool gameInProgress)
         {
             gameInProgress = false;
@@ -110,7 +115,7 @@ namespace Hangman
             Console.WriteLine($"You guessed a correct letter ({guess})!");
         }
 
-        static string GetGuessFromUser()
+        static string GetGuessFromUser(int triesLeft, StringBuilder incorrectLetters, string currentWord, char[] correctLetters)
         {
             bool validGuess = false;
             string guess = "";
@@ -126,6 +131,8 @@ namespace Hangman
                 }
                 else
                 {
+                    Console.Clear();
+                    DisplayGuessInfo(triesLeft, incorrectLetters, currentWord, correctLetters);
                     Console.WriteLine("Can only guess letters or whole word, try again!\n");
                 }
             }
