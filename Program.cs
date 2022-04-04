@@ -1,4 +1,6 @@
 ﻿using System;
+using System.IO;
+using System.Reflection;
 using System.Text;
 using System.Text.RegularExpressions;
 
@@ -10,7 +12,8 @@ namespace Hangman
         {
             // Game-settings
             int maxTries = 10;
-            string[] words = { "ice", "ball", "dimension" };
+            string filePath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.Desktop),"words.txt"); ;
+            string[] words = GetWordsFromTextFile(filePath);
 
             PlayGame(maxTries, words);
         }
@@ -225,6 +228,28 @@ namespace Hangman
             }
 
             return hiddenWord;
+        }
+
+        static string[] GetWordsFromTextFile(string filePath)
+        {
+            try
+            {
+                File.Exists(filePath);
+
+                StreamReader sr = new StreamReader(filePath);
+                string readFile = sr.ReadToEnd();
+                sr.Close();
+
+                string[] words = readFile.Split(',');
+
+                return words;
+            }
+            catch (IOException)
+            {
+                Console.WriteLine("Error! Problem reading specified filepath.");
+            }
+
+            return null;
         }
 
         static void DisplayIncorrectGuesses(StringBuilder incorrectLetters)
