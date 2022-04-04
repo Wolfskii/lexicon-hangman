@@ -76,7 +76,7 @@ namespace Hangman
 
         static void DisplayGuessInfo(int triesLeft, StringBuilder incorrectLetters, string currentWord, char[] correctLetters)
         {
-            displayHangMan(triesLeft);
+            DisplayHangMan(triesLeft);
             Console.WriteLine();
             DisplayTriesLeft(triesLeft);
             DisplayIncorrectGuesses(incorrectLetters);
@@ -108,15 +108,24 @@ namespace Hangman
 
         static void IncorrectLetter(ref int triesLeft, string guess, ref StringBuilder incorrectLetters)
         {
-            triesLeft--;
-            incorrectLetters.Append(guess[0] + " ");
-            Console.WriteLine("Letter was incorrect!");
+            // Only remove a try if letter hasn't been used before
+            if (!incorrectLetters.ToString().Contains(guess))
+            {
+                triesLeft--;
+                incorrectLetters.Append(guess[0] + " ");
+                Console.WriteLine("Letter was incorrect!");
+            }
         }
 
         static void CorrectLetter(ref char[] correctLetters, ref int amtCorrectLetters, string guess)
         {
-            correctLetters[amtCorrectLetters++] = guess[0]; // Add the guessed letter as char after last char in array
-            Console.WriteLine($"You guessed a correct letter ({guess})!");
+            // Only add to correct letters if hasn't been added before
+            if (!ExistsInCharArray(correctLetters, guess))
+            {
+                correctLetters[amtCorrectLetters++] = guess[0]; // Add the guessed letter as char after last char in array
+                Console.WriteLine($"You guessed a correct letter ({guess})!");
+                Console.WriteLine(correctLetters.Length);
+            }
         }
 
         static string GetGuessFromUser(int triesLeft, StringBuilder incorrectLetters, string currentWord, char[] correctLetters)
@@ -144,7 +153,7 @@ namespace Hangman
             return guess.ToUpper();
         }
 
-        static void displayHangMan(int triesLeft)
+        static void DisplayHangMan(int triesLeft)
         {
             switch (triesLeft)
             {
@@ -250,6 +259,18 @@ namespace Hangman
             Regex onlyLetters = new Regex("^[a-zA-Z ]+$");
 
             if (onlyLetters.IsMatch(stringToValidate))
+            {
+                return true;
+            }
+            else
+            {
+                return false;
+            }
+        }
+
+        static bool ExistsInCharArray(char[] array, string s)
+        {
+            if (new string(array).Contains(s))
             {
                 return true;
             }
