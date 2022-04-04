@@ -12,6 +12,8 @@ namespace Hangman
         {
             // Game-settings
             int maxTries = 10;
+
+            // Move provided (or your own) words.txt file to the Desktop (or change path below)!
             string filePath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.Desktop),"words.txt"); ;
             string[] words = GetWordsFromTextFile(filePath);
 
